@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap');
+@import "tailwindcss";
+
+:root {
+  --blush: #f9d4e8;
+  --deep-purple: #3d1a5e;
+  --mid-purple: #5a2d82;
+  --near-black: #1e0e30;
+  --charcoal: #2e1e3e;
+  --warm-white: #fdf8fc;
+  --muted: #8a6a9a;
+  --accent-pink: #f4a7c3;
+  --accent-gold: #c9a227;
+  --light-blush: #fceef6;
+  --deep-rose: #c0446a;
+}
+
+@theme inline {
+  --color-background: var(--warm-white);
+  --color-foreground: var(--charcoal);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--warm-white);
+  color: var(--charcoal);
+  font-family: 'DM Sans', sans-serif;
+  overflow-x: hidden;
+}
+
+.font-display { font-family: 'Cormorant Garamond', serif; }
+
+@keyframes floatLogo {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-18px); }
+}
+.float-logo { animation: floatLogo 6s ease-in-out infinite; }
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.spin-slow { animation: spinSlow 30s linear infinite; }
+
+@keyframes pulse-ring {
+  0%, 100% { opacity: 0.06; }
+  50%       { opacity: 0.14; }
+}
+.pulse-ring { animation: pulse-ring 4s ease-in-out infinite; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--warm-white); }
+::-webkit-scrollbar-thumb { background: var(--accent-pink); border-radius: 3px; }
+
+.smco-input {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 6px;
+  border: 1.5px solid rgba(0,0,0,0.12);
+  font-size: 14.5px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--charcoal);
+  background: #fff;
+  transition: border-color 0.2s;
+  outline: none;
+}
+.smco-input:focus { border-color: var(--deep-purple); }
+
+.smco-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--charcoal);
+  margin-bottom: 5px;
+}
