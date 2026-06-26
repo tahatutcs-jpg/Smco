@@ -2,12 +2,36 @@
 import { useState } from "react";
 
 const partnerTypes = [
-  { icon: "🏛️", title: "Government Agencies", desc: "Policy collaboration and resource mobilisation." },
-  { icon: "🌐", title: "NGOs & Charities", desc: "Joint programs and shared beneficiary networks." },
-  { icon: "🏢", title: "Corporate Companies", desc: "CSR partnerships and sponsorship opportunities." },
-  { icon: "👥", title: "Community Leaders", desc: "Grassroots outreach and beneficiary identification." },
-  { icon: "🌍", title: "International Organisations", desc: "Development funding and technical assistance." },
-  { icon: "⛪", title: "Religious Institutions", desc: "Faith-community networks for resource sharing." },
+  {
+    image: "https://www.svgrepo.com/show/530583/bank.svg",
+    title: "Government Agencies",
+    desc: "Policy collaboration and resource mobilisation.",
+  },
+  {
+    image: "https://www.svgrepo.com/show/530605/charity.svg",
+    title: "NGOs & Charities",
+    desc: "Joint programs and shared beneficiary networks.",
+  },
+  {
+    image: "https://www.svgrepo.com/show/530570/office-building.svg",
+    title: "Corporate Companies",
+    desc: "CSR partnerships and sponsorship opportunities.",
+  },
+  {
+    image: "https://www.svgrepo.com/show/530566/users-group.svg",
+    title: "Community Leaders",
+    desc: "Grassroots outreach and beneficiary identification.",
+  },
+  {
+    image: "https://www.svgrepo.com/show/530579/globe.svg",
+    title: "International Organisations",
+    desc: "Development funding and technical assistance.",
+  },
+  {
+    image: "https://www.svgrepo.com/show/530559/church.svg",
+    title: "Religious Institutions",
+    desc: "Faith-community networks for resource sharing.",
+  },
 ];
 
 const types = ["Government Agency","NGO / Charity","Corporate / CSR","Community Leader","International Organisation","Religious Institution","Other"];
