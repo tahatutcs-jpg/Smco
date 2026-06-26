@@ -1,27 +1,76 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight, ChevronDown } from "lucide-react";
-import Image from "next/image";
 
 const stats = [
-  { num: "500+", label: "Mothers Helped" },
-  { num: "7", label: "Core Programs" },
-  { num: "3+", label: "Countries Reached" },
+  { num: 500, suffix: "+", label: "Mothers Helped" },
+  { num: 7,   suffix: "",  label: "Core Programs" },
+  { num: 3,   suffix: "+", label: "Countries Reached" },
 ];
 
-// All IDs verified directly from Unsplash search pages
+// Neutral, inclusive, non-culturally-specific images
 const mosaicPhotos = {
-  large: "https://images.unsplash.com/photo-1681545303529-b6beb2e19f02?w=800&q=85&auto=format&fit=crop",
-  largeAlt: "Group of African women standing together",
-  topRight: "https://images.unsplash.com/photo-1529390079861-591de354faf5?w=400&q=85&auto=format&fit=crop",
-  topRightAlt: "Children writing in school",
-  bottomRight: "https://images.unsplash.com/photo-1487546331507-fcf8a5d27ab3?w=400&q=85&auto=format&fit=crop",
-  bottomRightAlt: "Mother carrying child on back",
+  large:          "https://images.unsplash.com/photo-1607748851687-ba9a10438621?w=800&q=85&auto=format&fit=crop",
+  largeAlt:       "Mother smiling with her child",
+  topRight:       "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=400&q=85&auto=format&fit=crop",
+  topRightAlt:    "Child studying and learning",
+  bottomRight:    "https://images.unsplash.com/photo-1474552226712-ac0f0961a954?w=400&q=85&auto=format&fit=crop",
+  bottomRightAlt: "Family together outdoors",
 };
 
+// Animated counter hook
+function useCounter(target: number, active: boolean, duration = 1800) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (!active) return;
+    let start = 0;
+    const step = Math.ceil(target / (duration / 16));
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= target) { setCount(target); clearInterval(timer); }
+      else setCount(start);
+    }, 16);
+    return () => clearInterval(timer);
+  }, [active, target, duration]);
+  return count;
+}
+
+function StatItem({ num, suffix, label, active, index }: { num: number; suffix: string; label: string; active: boolean; index: number }) {
+  const count = useCounter(num, active);
+  return (
+    <div
+      className="py-6 text-center"
+      style={{ borderLeft: index > 0 ? "1px solid rgba(249,212,232,0.08)" : "none" }}
+    >
+      <p className="font-display font-semibold" style={{ fontSize: "36px", color: "var(--accent-pink)" }}>
+        {count}{suffix}
+      </p>
+      <p className="text-xs mt-1 tracking-wide" style={{ color: "rgba(255,255,255,0.4)" }}>{label}</p>
+    </div>
+  );
+}
+
 export default function Hero() {
-  const [visible, setVisible] = useState(false);
-  useEffect(() => { const t = setTimeout(() => setVisible(true), 80); return () => clearTimeout(t); }, []);
+  const [visible, setVisible]         = useState(false);
+  const [statsActive, setStatsActive] = useState(false);
+  const statsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const t = setTimeout(() => setVisible(true), 80);
+    return () => clearTimeout(t);
+  }, []);
+
+  // Trigger counters when stats section scrolls into view
+  useEffect(() => {
+    const el = statsRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setStatsActive(true); obs.disconnect(); } },
+      { threshold: 0.4 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   return (
     <section
@@ -31,6 +80,7 @@ export default function Hero() {
         paddingTop: "76px",
       }}
     >
+      {/* Background texture */}
       <div className="absolute inset-0 opacity-[0.035]" style={{ backgroundImage: "radial-gradient(circle, #f9d4e8 1px, transparent 1px)", backgroundSize: "30px 30px" }} />
       <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(244,167,195,0.14) 0%, transparent 70%)", transform: "translate(30%,-30%)" }} />
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(201,162,39,0.08) 0%, transparent 70%)", transform: "translate(-30%,30%)" }} />
@@ -38,8 +88,11 @@ export default function Hero() {
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 w-full py-20">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
 
-          {/* Left text */}
-          <div className="transition-all duration-1000" style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(28px)" }}>
+          {/* ── Left text ── */}
+          <div
+            className="transition-all duration-1000"
+            style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(28px)" }}
+          >
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-8" style={{ background: "rgba(249,212,232,0.1)", border: "1px solid rgba(249,212,232,0.2)" }}>
               <span className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--accent-pink)" }} />
               <span className="text-xs tracking-widest uppercase" style={{ color: "var(--blush)" }}>Est. March 2025 · Kampala, Uganda</span>
@@ -50,55 +103,127 @@ export default function Hero() {
               <em style={{ color: "var(--accent-pink)" }}>Mother's</em><br />
               Charity
             </h1>
-            <p className="font-display italic mb-8" style={{ fontSize: "21px", color: "rgba(249,212,232,0.65)" }}>"Empowering Mothers, Transforming Futures."</p>
+            <p className="font-display italic mb-8" style={{ fontSize: "21px", color: "rgba(249,212,232,0.65)" }}>
+              "Empowering Mothers, Transforming Futures."
+            </p>
             <p className="text-base leading-7 mb-10 max-w-md" style={{ color: "rgba(255,255,255,0.55)" }}>
               A non-profit organisation dedicated to supporting single mothers and their children through education, economic empowerment, healthcare, and community development.
             </p>
 
             <div className="flex gap-4 flex-wrap">
-              <a href="#donate" className="flex items-center gap-2 text-sm font-semibold text-white px-7 py-3.5 rounded-lg no-underline transition-all duration-200" style={{ background: "var(--deep-purple)", border: "1px solid rgba(244,167,195,0.3)" }} onMouseEnter={(e) => { e.currentTarget.style.background = "var(--mid-purple)"; e.currentTarget.style.transform = "translateY(-2px)"; }} onMouseLeave={(e) => { e.currentTarget.style.background = "var(--deep-purple)"; e.currentTarget.style.transform = "translateY(0)"; }}>Donate Today <ArrowRight size={15} /></a>
-              <a href="#about" className="text-sm font-medium text-white px-7 py-3.5 rounded-lg no-underline transition-all duration-200" style={{ border: "1px solid rgba(255,255,255,0.22)" }} onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(244,167,195,0.5)"; e.currentTarget.style.background = "rgba(244,167,195,0.07)"; }} onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.22)"; e.currentTarget.style.background = "transparent"; }}>Learn More</a>
+              <a
+                href="#donate"
+                className="flex items-center gap-2 text-sm font-semibold text-white px-7 py-3.5 rounded-lg no-underline transition-all duration-200"
+                style={{ background: "var(--deep-purple)", border: "1px solid rgba(244,167,195,0.3)" }}
+                onMouseEnter={e => { e.currentTarget.style.background = "var(--mid-purple)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "var(--deep-purple)"; e.currentTarget.style.transform = "translateY(0)"; }}
+              >
+                Donate Today <ArrowRight size={15} />
+              </a>
+              <a
+                href="#about"
+                className="text-sm font-medium text-white px-7 py-3.5 rounded-lg no-underline transition-all duration-200"
+                style={{ border: "1px solid rgba(255,255,255,0.22)" }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(244,167,195,0.5)"; e.currentTarget.style.background = "rgba(244,167,195,0.07)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.22)"; e.currentTarget.style.background = "transparent"; }}
+              >
+                Learn More
+              </a>
             </div>
 
-            <div className="grid grid-cols-3 mt-12 overflow-hidden rounded-2xl" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(249,212,232,0.1)" }}>
+            {/* Animated stats */}
+            <div
+              ref={statsRef}
+              className="grid grid-cols-3 mt-12 overflow-hidden rounded-2xl"
+              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(249,212,232,0.1)" }}
+            >
               {stats.map((s, i) => (
-                <div key={s.label} className="py-6 text-center" style={{ borderLeft: i > 0 ? "1px solid rgba(249,212,232,0.08)" : "none" }}>
-                  <p className="font-display font-semibold" style={{ fontSize: "36px", color: "var(--accent-pink)" }}>{s.num}</p>
-                  <p className="text-xs mt-1 tracking-wide" style={{ color: "rgba(255,255,255,0.4)" }}>{s.label}</p>
-                </div>
+                <StatItem key={s.label} num={s.num} suffix={s.suffix} label={s.label} active={statsActive} index={i} />
               ))}
             </div>
           </div>
 
-          {/* Right — Photo Mosaic with verified photo IDs */}
-          <div className="hidden lg:block" style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)", transition: "opacity 1.2s ease 0.3s, transform 1.2s ease 0.3s" }}>
+          {/* ── Right — Photo Mosaic ── */}
+          <div
+            className="hidden lg:block"
+            style={{
+              opacity: visible ? 1 : 0,
+              transform: visible ? "translateY(0)" : "translateY(20px)",
+              transition: "opacity 1.2s ease 0.3s, transform 1.2s ease 0.3s",
+            }}
+          >
             <div className="grid gap-3" style={{ gridTemplateColumns: "1fr 1fr 1fr", gridTemplateRows: "220px 220px" }}>
 
-              {/* Large — group of African women */}
-              <div className="relative overflow-hidden rounded-2xl" style={{ gridColumn: "1 / 3", gridRow: "1 / 3" }}>
-                <img src={mosaicPhotos.large} alt={mosaicPhotos.largeAlt} className="w-full h-full object-cover" style={{ transition: "transform 0.6s ease", objectPosition: "center 20%" }} onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.04)")} onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")} />
-                <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(30,14,48,0.65) 0%, transparent 55%)" }} />
-                <div className="absolute bottom-4 left-4 px-4 py-2 rounded-xl text-white text-xs font-semibold backdrop-blur-sm" style={{ background: "rgba(61,26,94,0.75)", border: "1px solid rgba(244,167,195,0.25)" }}>💗 Supporting families since 2025</div>
+              {/* Large main image */}
+              <div
+                className="relative overflow-hidden rounded-2xl group"
+                style={{ gridColumn: "1 / 3", gridRow: "1 / 3" }}
+              >
+                <img
+                  src={mosaicPhotos.large}
+                  alt={mosaicPhotos.largeAlt}
+                  className="w-full h-full object-cover"
+                  style={{ transition: "transform 0.6s ease", objectPosition: "center 20%" }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.transform = "scale(1.05)";
+                    (e.currentTarget.nextElementSibling as HTMLElement).style.opacity = "1";
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.transform = "scale(1)";
+                    (e.currentTarget.nextElementSibling as HTMLElement).style.opacity = "0";
+                  }}
+                />
+                {/* Hover overlay */}
+                <div
+                  className="absolute inset-0 flex items-center justify-center"
+                  style={{
+                    background: "rgba(61,26,94,0.45)",
+                    opacity: 0,
+                    transition: "opacity 0.4s ease",
+                    pointerEvents: "none",
+                  }}
+                >
+                  <span className="text-white text-sm font-semibold tracking-widest uppercase px-5 py-2 rounded-full" style={{ border: "1px solid rgba(255,255,255,0.4)", backdropFilter: "blur(4px)" }}>Our Community</span>
+                </div>
+                <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(30,14,48,0.65) 0%, transparent 55%)", pointerEvents: "none" }} />
+                <div className="absolute bottom-4 left-4 px-4 py-2 rounded-xl text-white text-xs font-semibold backdrop-blur-sm" style={{ background: "rgba(61,26,94,0.75)", border: "1px solid rgba(244,167,195,0.25)" }}>
+                  💗 Supporting families since 2025
+                </div>
               </div>
 
-              {/* Top right — children at school */}
+              {/* Top right */}
               <div className="relative overflow-hidden rounded-2xl" style={{ gridColumn: "3", gridRow: "1" }}>
-                <img src={mosaicPhotos.topRight} alt={mosaicPhotos.topRightAlt} className="w-full h-full object-cover" style={{ transition: "transform 0.6s ease" }} onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.06)")} onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")} />
-                <div className="absolute inset-0 flex items-end p-3" style={{ background: "linear-gradient(to top, rgba(30,14,48,0.7) 0%, transparent 60%)" }}>
+                <img
+                  src={mosaicPhotos.topRight}
+                  alt={mosaicPhotos.topRightAlt}
+                  className="w-full h-full object-cover"
+                  style={{ transition: "transform 0.6s ease" }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.08)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; }}
+                />
+                <div className="absolute inset-0 flex items-end p-3" style={{ background: "linear-gradient(to top, rgba(30,14,48,0.7) 0%, transparent 60%)", pointerEvents: "none" }}>
                   <span className="text-xs text-white font-medium">Education</span>
                 </div>
               </div>
 
-              {/* Bottom right — mother carrying child */}
+              {/* Bottom right */}
               <div className="relative overflow-hidden rounded-2xl" style={{ gridColumn: "3", gridRow: "2" }}>
-                <img src={mosaicPhotos.bottomRight} alt={mosaicPhotos.bottomRightAlt} className="w-full h-full object-cover" style={{ transition: "transform 0.6s ease", objectPosition: "center 15%" }} onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.06)")} onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")} />
-                <div className="absolute inset-0 flex items-end p-3" style={{ background: "linear-gradient(to top, rgba(30,14,48,0.7) 0%, transparent 60%)" }}>
+                <img
+                  src={mosaicPhotos.bottomRight}
+                  alt={mosaicPhotos.bottomRightAlt}
+                  className="w-full h-full object-cover"
+                  style={{ transition: "transform 0.6s ease", objectPosition: "center 15%" }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.08)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; }}
+                />
+                <div className="absolute inset-0 flex items-end p-3" style={{ background: "linear-gradient(to top, rgba(30,14,48,0.7) 0%, transparent 60%)", pointerEvents: "none" }}>
                   <span className="text-xs text-white font-medium">Family</span>
                 </div>
               </div>
             </div>
             <p className="text-right mt-2 text-xs" style={{ color: "rgba(255,255,255,0.2)" }}>Real families we serve ↑</p>
           </div>
+
         </div>
       </div>
 
