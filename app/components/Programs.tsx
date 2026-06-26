@@ -5,8 +5,9 @@ const programs = [
     icon: "👗",
     title: "Women Empowerment",
     desc: "Practical skills that build income and independence for single mothers.",
-    photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=85",
-    photoAlt: "Women in training workshop",
+    // Tailoring / fashion workshop — African women sewing
+    photo: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&q=85",
+    photoAlt: "Women in tailoring and skills workshop",
     items: [
       "Tailoring and fashion training",
       "Hairdressing and beauty courses",
@@ -19,8 +20,9 @@ const programs = [
     icon: "📚",
     title: "Child Support Program",
     desc: "Investing in children's futures so they can break cycles of poverty.",
-    photo: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=600&q=85",
-    photoAlt: "Children learning in class",
+    // Children studying / classroom in Africa
+    photo: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=700&q=85",
+    photoAlt: "Children learning in a classroom",
     items: [
       "School fees assistance",
       "Distribution of scholastic materials",
@@ -32,8 +34,9 @@ const programs = [
     icon: "🏥",
     title: "Health & Wellness",
     desc: "Ensuring mothers and children have access to essential healthcare.",
-    photo: "https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=600&q=85",
-    photoAlt: "Healthcare and wellness",
+    // Healthcare / medical outreach
+    photo: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=700&q=85",
+    photoAlt: "Healthcare and wellness outreach",
     items: [
       "Medical camps",
       "Mental health counseling",
@@ -83,22 +86,21 @@ export default function Programs() {
               }}
             >
               {/* Photo header */}
-              <div className="relative overflow-hidden" style={{ height: "190px" }}>
+              <div className="relative overflow-hidden" style={{ height: "200px" }}>
                 <img
                   src={p.photo}
                   alt={p.photoAlt}
                   className="w-full h-full object-cover transition-transform duration-500"
-                  style={{ display: "block" }}
-                  onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.05)")}
+                  onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.06)")}
                   onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")}
                 />
                 <div
                   className="absolute inset-0"
-                  style={{ background: "linear-gradient(to top, rgba(30,14,48,0.45) 0%, transparent 55%)" }}
+                  style={{ background: "linear-gradient(to top, rgba(30,14,48,0.5) 0%, transparent 55%)" }}
                 />
                 <div
                   className="absolute top-4 left-4 w-10 h-10 rounded-xl flex items-center justify-center text-xl"
-                  style={{ background: "rgba(255,255,255,0.9)" }}
+                  style={{ background: "rgba(255,255,255,0.92)", boxShadow: "0 2px 8px rgba(0,0,0,0.12)" }}
                 >
                   {p.icon}
                 </div>
@@ -106,10 +108,7 @@ export default function Programs() {
 
               {/* Content */}
               <div className="p-7 flex flex-col gap-4 flex-1">
-                <h3
-                  className="font-display font-semibold"
-                  style={{ fontSize: "22px", color: "var(--near-black)" }}
-                >
+                <h3 className="font-display font-semibold" style={{ fontSize: "22px", color: "var(--near-black)" }}>
                   {p.title}
                 </h3>
                 <p className="text-sm leading-6" style={{ color: "var(--muted)" }}>{p.desc}</p>
