@@ -14,3 +14,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   );
 }
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Single Mother's Charity Organisation",
+  description: "Empowering Mothers, Transforming Futures.",
+  icons: {
+    icon: "/smco-logo.png",
+    apple: "/smco-logo.png",
+  },
+};
