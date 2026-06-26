@@ -131,12 +131,13 @@ export default function Partner({ onToast }: { onToast: (msg: string) => void })
                     transition: "opacity 0.35s ease",
                   }}
                 >
-                  <span
-                    className="text-white text-xs font-semibold tracking-widest uppercase px-4 py-2 rounded-full"
-                    style={{ border: "1px solid rgba(255,255,255,0.45)", backdropFilter: "blur(4px)" }}
-                  >
-                    Learn More
-                  </span>
+                 <a href="#contact"
+  className="text-white text-xs font-semibold tracking-widest uppercase px-4 py-2 rounded-full no-underline"
+  style={{ border: "1px solid rgba(255,255,255,0.45)", backdropFilter: "blur(4px)" }}
+>
+  Learn More
+</a>
+
                 </div>
                 {/* Icon badge */}
                 <div
