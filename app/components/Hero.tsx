@@ -8,7 +8,6 @@ const stats = [
   { num: 3,   suffix: "+", label: "Countries Reached" },
 ];
 
-// Neutral, inclusive, non-culturally-specific images
 const mosaicPhotos = {
   large:          "https://images.unsplash.com/photo-1607748851687-ba9a10438621?w=800&q=85&auto=format&fit=crop",
   largeAlt:       "Mother smiling with her child",
@@ -60,7 +59,6 @@ export default function Hero() {
     return () => clearTimeout(t);
   }, []);
 
-  // Trigger counters when stats section scrolls into view
   useEffect(() => {
     const el = statsRef.current;
     if (!el) return;
@@ -143,20 +141,89 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* ── Right — Photo Mosaic ── */}
+          {/* ── Right — Photos ── */}
           <div
-            className="hidden lg:block"
+            className="relative"
             style={{
               opacity: visible ? 1 : 0,
               transform: visible ? "translateY(0)" : "translateY(20px)",
               transition: "opacity 1.2s ease 0.3s, transform 1.2s ease 0.3s",
             }}
           >
-            <div className="grid gap-3" style={{ gridTemplateColumns: "1fr 1fr 1fr", gridTemplateRows: "220px 220px" }}>
+
+            {/* ── MOBILE: single full-width image ── */}
+            <div className="block lg:hidden relative overflow-hidden rounded-2xl" style={{ height: "280px" }}>
+              <img
+                src={mosaicPhotos.large}
+                alt={mosaicPhotos.largeAlt}
+                className="w-full h-full object-cover"
+                style={{ objectPosition: "center 20%" }}
+              />
+              <div
+                className="absolute inset-0"
+                style={{ background: "linear-gradient(to top, rgba(30,14,48,0.65) 0%, transparent 55%)", pointerEvents: "none" }}
+              />
+              <div
+                className="absolute bottom-4 left-4 px-4 py-2 rounded-xl text-white text-xs font-semibold backdrop-blur-sm"
+                style={{ background: "rgba(61,26,94,0.75)", border: "1px solid rgba(244,167,195,0.25)" }}
+              >
+                💗 Supporting families since 2025
+              </div>
+            </div>
+
+            {/* ── TABLET (md): 2-column simple grid ── */}
+            <div className="hidden md:grid lg:hidden gap-3" style={{ gridTemplateColumns: "1fr 1fr", gridTemplateRows: "200px 200px" }}>
+              {/* Large spans both rows on left */}
+              <div className="relative overflow-hidden rounded-2xl" style={{ gridRow: "1 / 3" }}>
+                <img
+                  src={mosaicPhotos.large}
+                  alt={mosaicPhotos.largeAlt}
+                  className="w-full h-full object-cover"
+                  style={{ objectPosition: "center 20%", transition: "transform 0.6s ease" }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.05)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; }}
+                />
+                <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(30,14,48,0.65) 0%, transparent 55%)", pointerEvents: "none" }} />
+                <div className="absolute bottom-4 left-4 px-4 py-2 rounded-xl text-white text-xs font-semibold backdrop-blur-sm" style={{ background: "rgba(61,26,94,0.75)", border: "1px solid rgba(244,167,195,0.25)" }}>
+                  💗 Supporting families since 2025
+                </div>
+              </div>
+              {/* Top right */}
+              <div className="relative overflow-hidden rounded-2xl">
+                <img
+                  src={mosaicPhotos.topRight}
+                  alt={mosaicPhotos.topRightAlt}
+                  className="w-full h-full object-cover"
+                  style={{ transition: "transform 0.6s ease" }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.08)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; }}
+                />
+                <div className="absolute inset-0 flex items-end p-3" style={{ background: "linear-gradient(to top, rgba(30,14,48,0.7) 0%, transparent 60%)", pointerEvents: "none" }}>
+                  <span className="text-xs text-white font-medium">Education</span>
+                </div>
+              </div>
+              {/* Bottom right */}
+              <div className="relative overflow-hidden rounded-2xl">
+                <img
+                  src={mosaicPhotos.bottomRight}
+                  alt={mosaicPhotos.bottomRightAlt}
+                  className="w-full h-full object-cover"
+                  style={{ objectPosition: "center 15%", transition: "transform 0.6s ease" }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.08)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; }}
+                />
+                <div className="absolute inset-0 flex items-end p-3" style={{ background: "linear-gradient(to top, rgba(30,14,48,0.7) 0%, transparent 60%)", pointerEvents: "none" }}>
+                  <span className="text-xs text-white font-medium">Family</span>
+                </div>
+              </div>
+            </div>
+
+            {/* ── DESKTOP: full 3-col mosaic ── */}
+            <div className="hidden lg:grid gap-3" style={{ gridTemplateColumns: "1fr 1fr 1fr", gridTemplateRows: "220px 220px" }}>
 
               {/* Large main image */}
               <div
-                className="relative overflow-hidden rounded-2xl group"
+                className="relative overflow-hidden rounded-2xl"
                 style={{ gridColumn: "1 / 3", gridRow: "1 / 3" }}
               >
                 <img
@@ -173,15 +240,9 @@ export default function Hero() {
                     (e.currentTarget.nextElementSibling as HTMLElement).style.opacity = "0";
                   }}
                 />
-                {/* Hover overlay */}
                 <div
                   className="absolute inset-0 flex items-center justify-center"
-                  style={{
-                    background: "rgba(61,26,94,0.45)",
-                    opacity: 0,
-                    transition: "opacity 0.4s ease",
-                    pointerEvents: "none",
-                  }}
+                  style={{ background: "rgba(61,26,94,0.45)", opacity: 0, transition: "opacity 0.4s ease", pointerEvents: "none" }}
                 >
                   <span className="text-white text-sm font-semibold tracking-widest uppercase px-5 py-2 rounded-full" style={{ border: "1px solid rgba(255,255,255,0.4)", backdropFilter: "blur(4px)" }}>Our Community</span>
                 </div>
@@ -221,7 +282,8 @@ export default function Hero() {
                 </div>
               </div>
             </div>
-            <p className="text-right mt-2 text-xs" style={{ color: "rgba(255,255,255,0.2)" }}>Real families we serve ↑</p>
+
+            <p className="text-right mt-2 text-xs hidden lg:block" style={{ color: "rgba(255,255,255,0.2)" }}>Real families we serve ↑</p>
           </div>
 
         </div>
